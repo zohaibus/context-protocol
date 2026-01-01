@@ -1,0 +1,4 @@
+# Context Protocol - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+pyperclip>=1.8.0

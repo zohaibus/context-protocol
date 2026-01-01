@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+
+# User State Files (Prevent accidental commits of real work)
+# All .md files ignored EXCEPT the ones that are part of this repo
+*.md
+!README.md
+!CORE_PROMPT.md
+!THREAD_TEMPLATE.md
+!USAGE_GUIDE.md
+!examples/*.md
+!examples/README.md
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs
+*.log
