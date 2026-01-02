@@ -123,12 +123,19 @@ pip install -r requirements.txt
 
 ### First Session
 
+### First Session (New Project)
 1. Copy `THREAD_TEMPLATE.md` to `my-project.md`
 2. Edit the template with your project context
 3. Open Claude/GPT/Gemini
 4. Paste contents of `CORE_PROMPT.md`
 5. Paste contents of `my-project.md`
 6. Start working
+
+### Resuming a Session (Existing Project)
+1. Open Claude/GPT/Gemini
+2. Paste contents of `CORE_PROMPT.md`
+3. Paste the **Session Injection Block** from your state file
+4. Continue working
 
 ### End Session
 
