@@ -1,7 +1,7 @@
 # Context Protocol
 
 > **The LLM is the CPU. Your files are the memory. You are the operating system.**
-⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git — not an MCP server implementation.
+⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git and it's not an MCP server implementation.
 
 A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human-in-the-loop cognition.
 
@@ -43,7 +43,7 @@ Stop expecting AI to remember. Start acting like an Operating System.
 │                       ANY LLM                               │
 │                      (The CPU)                              │
 │                                                             │
-│    Claude │ GPT-4 │ Gemini — Interchangeable                │
+│    Claude │ GPT │ Gemini  |  Interchangeable                │
 │    Processes input → Generates output → Forgets             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -69,7 +69,7 @@ If your work requires consistent AI behavior over time, this is for you.
 |---------|--------------|
 | `CHECKPOINT` | Export state as structured diff |
 | `SCOPE LOCK` | Refuse to discuss other topics |
-| `HARD STOP` | Emergency brake — stop completely |
+| `HARD STOP` | Emergency brake, full stop completely |
 | `MODE: STRATEGY` | Deterministic, flag contradictions |
 | `MODE: EXPLORATION` | Creative, challenge assumptions |
 
@@ -218,7 +218,7 @@ Different problems, different solutions.
 ### "This is too manual"
 
 Manual where decisions matter is a feature, not a bug.
-The friction is intentional — it's your quality control checkpoint.
+The friction is intentional and it's your quality control checkpoint.
 
 ### "What about [Mem.ai / Notion AI / etc]?"
 
@@ -286,7 +286,7 @@ The system records.
 
 ## License
 
-MIT — Fork it. Adapt it. Own it.
+MIT. Fork it. Adapt it. Own it.
 
 ---
 
