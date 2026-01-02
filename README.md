@@ -111,7 +111,7 @@ END SESSION:
 ### Prerequisites
 - A text editor (VS Code, Obsidian, or any markdown editor)
 - Git
-- An LLM (Claude, GPT-4, or Gemini)
+- An LLM (Claude, GPT, or Gemini)
 
 ### Setup
 
@@ -229,7 +229,7 @@ This is sovereign-first. Your files, your machine, your control.
 
 ## Validation
 
-Tested across Claude, GPT-4, and Gemini:
+Tested across Claude, GPT, and Gemini:
 
 | Test | Result |
 |------|--------|
