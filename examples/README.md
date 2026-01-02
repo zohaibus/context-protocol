@@ -10,6 +10,8 @@ They do not represent real companies, projects, budgets, or individuals.
 |------|----------|
 | `PROJECT_STATE.md` | Software development project (technical) |
 | `STRATEGY_STATE.md` | Strategic planning / business decisions |
+| `README.md` | This File |
+
 
 ## Using These Examples
 
