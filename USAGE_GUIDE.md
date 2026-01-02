@@ -8,7 +8,7 @@ A deep dive into the Context Protocol workflow, philosophy, and best practices.
 
 ### Why LLMs Feel Inconsistent
 
-LLMs are **stateless text processors**. They don't "remember" anything — they process your input and generate output, then reset completely.
+LLMs are **stateless text processors**. They don't "remember" anything :: they process your input and generate output, then reset completely.
 
 What feels like "memory" is actually:
 - Chat history being re-fed into the context window
@@ -66,7 +66,7 @@ ANY LLM (The CPU)
 
 ### During Session
 
-- Work normally — ask questions, brainstorm, code
+- Work normally :: ask questions, brainstorm, code
 - AI will respect your `<locked_decisions>` and `<constraints>`
 - If AI tries to resurrect a `<rejected_ideas>`, it should warn you
 - If you drift off topic, `SCOPE LOCK` will redirect you
@@ -149,7 +149,7 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 
 ### HARD STOP
 
-**Purpose:** Emergency brake — stop all output immediately
+**Purpose:** Emergency brake :: stop all output immediately
 
 **When to use:**
 - AI is going in a wrong direction
@@ -217,9 +217,9 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 **Example:**
 ```xml
 <rejected_ideas>
-1. GraphQL — too complex for MVP
-2. Microservices — need monolith first
-3. Blockchain — not relevant to our problem
+1. GraphQL :: too complex for MVP
+2. Microservices :: need monolith first
+3. Blockchain :: not relevant to our problem
 </rejected_ideas>
 ```
 
@@ -245,7 +245,7 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 
 ### Keep Injection Blocks Small
 
-The session injection should be **lean** — only what the AI needs for this specific session.
+The session injection should be **lean** :: only what the AI needs for this specific session.
 
 **Too big:**
 - Full project history
