@@ -3,6 +3,15 @@
 > **The LLM is the CPU. Your files are the memory. You are the operating system.**
 ⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git and it's not an MCP server implementation.
 
+
+- ❌ Not an MCP server (different from Anthropic's Model Context Protocol)
+- ❌ Not a RAG pipeline or vector database
+- ❌ Not an agent framework
+- ✅ A protocol for human-in-the-loop cognition
+
+
+---
+
 A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human-in-the-loop cognition.
 
 ---
