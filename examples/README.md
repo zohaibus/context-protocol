@@ -21,10 +21,10 @@ They do not represent real companies, projects, budgets, or individuals.
 
 The key sections in any thread state:
 
-- **Status** — Where you are now
-- **Locked Decisions** — What's decided and won't change
-- **Rejected Ideas** — What you've ruled out (so AI doesn't suggest them)
-- **Constraints** — Hard limits that can't be violated
-- **Today's Focus** — What you're working on this session
+- **Status** :: Where you are now
+- **Locked Decisions** :: What's decided and won't change
+- **Rejected Ideas** :: What you've ruled out (so AI doesn't suggest them)
+- **Constraints** :: Hard limits that can't be violated
+- **Today's Focus** :: What you're working on this session
 
 Start simple. Add sections as you need them.
