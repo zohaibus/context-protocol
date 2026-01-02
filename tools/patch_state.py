@@ -30,8 +30,42 @@ try:
     HAS_CLIPBOARD = True
 except ImportError:
     HAS_CLIPBOARD = False
-    print("⚠️  Install pyperclip for clipboard support: pip install pyperclip")
-    print("   Falling back to manual input mode.\n")
+    print("Note: Install pyperclip for clipboard support (pip install pyperclip)")
+    print("Falling back to manual paste mode.\n")
+
+
+def copy_to_clipboard_windows(text):
+    """Windows-native clipboard copy that preserves Unicode."""
+    try:
+        # Use PowerShell to set clipboard with proper encoding
+        process = subprocess.Popen(
+            ['powershell', '-command', 'Set-Clipboard -Value $input'],
+            stdin=subprocess.PIPE,
+            encoding='utf-8'
+        )
+        process.communicate(input=text)
+        return True
+    except Exception as e:
+        print(f"Warning: Windows clipboard failed: {e}")
+        return False
+
+
+def copy_to_clipboard(text):
+    """Copy text to clipboard, preserving Unicode characters."""
+    # Try Windows-native method first (better Unicode support)
+    if sys.platform == 'win32':
+        if copy_to_clipboard_windows(text):
+            return True
+    
+    # Fall back to pyperclip
+    if HAS_CLIPBOARD:
+        try:
+            pyperclip.copy(text)
+            return True
+        except Exception as e:
+            print(f"Warning: pyperclip failed: {e}")
+    
+    return False
 
 
 def find_section(content, section_name):
@@ -66,11 +100,11 @@ def load_mode(thread_file):
     core_path = find_core_prompt()
     
     if not core_path:
-        print("❌ Could not find CORE_PROMPT.md")
+        print("Error: Could not find CORE_PROMPT.md")
         return False
     
     if not os.path.exists(thread_file):
-        print(f"❌ Could not find thread file: {thread_file}")
+        print(f"Error: Could not find thread file: {thread_file}")
         return False
     
     with open(core_path, 'r', encoding='utf-8') as f:
@@ -92,18 +126,17 @@ def load_mode(thread_file):
     
     full_context = f"{core_content}\n\n{thread_injection}"
     
-    if HAS_CLIPBOARD:
-        pyperclip.copy(full_context)
-        print(f"✅ Loaded to clipboard!")
-        print(f"   📄 Core prompt: {os.path.basename(core_path)}")
-        print(f"   📄 Thread state: {thread_file}")
-        print(f"   📋 {len(full_context):,} characters copied")
-        print(f"\n👉 Paste into Claude/GPT/Gemini to start session")
+    if copy_to_clipboard(full_context):
+        print(f"Loaded to clipboard!")
+        print(f"   Core prompt: {os.path.basename(core_path)}")
+        print(f"   Thread state: {thread_file}")
+        print(f"   {len(full_context):,} characters copied")
+        print(f"\nPaste into Claude/GPT/Gemini to start session")
     else:
         print("=" * 60)
         print(full_context)
         print("=" * 60)
-        print(f"\n👆 Copy the above to start your session")
+        print(f"\nCopy the above to start your session")
     
     return True
 
@@ -111,10 +144,13 @@ def load_mode(thread_file):
 def get_patch_from_clipboard():
     """Get STATE PATCH from clipboard or manual input."""
     if HAS_CLIPBOARD:
-        content = pyperclip.paste()
-        if "STATE PATCH" in content or "[ADD]" in content or "[UPDATE]" in content:
-            return content
-        print("📋 Clipboard doesn't contain a STATE PATCH.")
+        try:
+            content = pyperclip.paste()
+            if content and ("STATE PATCH" in content or "[ADD]" in content or "[UPDATE]" in content):
+                return content
+        except:
+            pass
+        print("Clipboard does not contain a STATE PATCH.")
     
     print("Paste your STATE PATCH below (press Enter twice when done):\n")
     lines = []
@@ -147,7 +183,6 @@ def parse_state_patch(patch_text):
     
     # Extract thread and date (permissive regex for thread names with spaces)
     header_match = re.search(r'Thread:\s*(.*?)\s*\|\s*Date:\s*([\d-]+)', patch_text)
-
     if header_match:
         result['thread'] = header_match.group(1).strip()
         result['date'] = header_match.group(2)
@@ -193,19 +228,16 @@ def sanitize_for_commit(text):
     """Sanitize text for safe use in git commit messages."""
     if not text:
         return "update"
-    # Remove potentially dangerous characters
     safe_text = text.replace('"', '').replace("'", "").replace('`', '')
     safe_text = safe_text.replace('\n', ' ').replace('\r', '')
     safe_text = safe_text.replace('$', '').replace('\\', '')
     safe_text = safe_text.replace(';', '').replace('&', '').replace('|', '')
-    # Limit length
     return safe_text[:50].strip() or "update"
 
 
 def git_commit(thread_file, summary, today):
     """Safely commit changes using subprocess (no shell injection)."""
     try:
-        # Stage the file
         subprocess.run(
             ['git', 'add', thread_file],
             check=True,
@@ -213,11 +245,9 @@ def git_commit(thread_file, summary, today):
             text=True
         )
         
-        # Create sanitized commit message
         safe_summary = sanitize_for_commit(summary)
         commit_msg = f"[{safe_summary}] checkpoint: {today}"
         
-        # Commit
         subprocess.run(
             ['git', 'commit', '-m', commit_msg],
             check=True,
@@ -227,10 +257,10 @@ def git_commit(thread_file, summary, today):
         
         return True
     except subprocess.CalledProcessError as e:
-        print(f"⚠️  Git error: {e.stderr if e.stderr else 'Unknown error'}")
+        print(f"Git error: {e.stderr if e.stderr else 'Unknown error'}")
         return False
     except FileNotFoundError:
-        print("⚠️  Git not found. Please install git or commit manually.")
+        print("Git not found. Please install git or commit manually.")
         return False
 
 
@@ -239,7 +269,7 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
     with open(thread_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    print(f"\n📝 Applying changes to {thread_file}:")
+    print(f"\nApplying changes to {thread_file}:")
     
     changes = []
     
@@ -259,36 +289,30 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
         print("  (no changes to apply)")
         return False
     
-    # Confirm
     if not auto_mode:
         response = input("\nApply these changes? (y/n): ")
         if response.lower() != 'y':
-            print("❌ Cancelled")
+            print("Cancelled")
             return False
     
-    # Apply updates to content
-    # Update "Last Updated" date
     today = datetime.now().strftime('%Y-%m-%d')
-    content = re.sub(r'Last Updated:.*', f'Last Updated: {today}', content)
+    content = re.sub(r'Last Updated:.*', f'Last Updated: {today}', content, flags=re.IGNORECASE)
     
-    # Add decisions
     if patch_data['add_decisions']:
-        decisions_section = re.search(r'## Decisions Made\n\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+        decisions_section = re.search(r'## Decisions Made\n\n(.*?)(?=\n##|\Z)', content, re.DOTALL | re.IGNORECASE)
         if decisions_section:
             existing = decisions_section.group(1)
-            # Count existing numbered items
             existing_numbers = re.findall(r'^(\d+)\.', existing, re.MULTILINE)
             next_num = max([int(n) for n in existing_numbers], default=0) + 1
             
-            new_items = '\n'.join(f"{next_num + i}. **{item}**" 
+            new_items = '\n'.join(f"{next_num + i}. {item}" 
                                   for i, item in enumerate(patch_data['add_decisions']))
             
             insert_pos = decisions_section.end(1)
             content = content[:insert_pos] + '\n' + new_items + content[insert_pos:]
     
-    # Add rejected ideas
     if patch_data['add_rejected']:
-        rejected_section = re.search(r'## Rejected Ideas\n\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+        rejected_section = re.search(r'## Rejected Ideas\n\n(.*?)(?=\n##|\Z)', content, re.DOTALL | re.IGNORECASE)
         if rejected_section:
             existing = rejected_section.group(1)
             existing_numbers = re.findall(r'^(\d+)\.', existing, re.MULTILINE)
@@ -300,14 +324,12 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
             insert_pos = rejected_section.end(1)
             content = content[:insert_pos] + '\n' + new_items + content[insert_pos:]
     
-    # Update status
     if patch_data['update_status']:
         for key, value in patch_data['update_status'].items():
             pattern = rf'\*\*{re.escape(key)}:\*\*.*'
             replacement = f'**{key}:** {value}'
-            content = re.sub(pattern, replacement, content)
+            content = re.sub(pattern, replacement, content, flags=re.IGNORECASE)
     
-    # Update last session
     if patch_data['next_actions']:
         last_session = f"""## Last Session
 
@@ -318,25 +340,22 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
         for i, action in enumerate(patch_data['next_actions'], 1):
             last_session += f"{i}. {action}\n"
         
-        # Replace existing Last Session section
         content = re.sub(r'## Last Session\n\n.*?(?=\n##|\Z)', 
-                        last_session + '\n', content, flags=re.DOTALL)
+                        last_session + '\n', content, flags=re.DOTALL | re.IGNORECASE)
     
-    # Write updated content
     with open(thread_file, 'w', encoding='utf-8') as f:
         f.write(content)
     
-    print(f"\n✅ Updated {thread_file}")
+    print(f"\nUpdated {thread_file}")
     
-    # Git commit
     if not auto_mode:
         commit = input("Git commit? (y/n): ")
         if commit.lower() == 'y':
             if git_commit(thread_file, patch_data.get('thread'), today):
-                print("✅ Committed")
+                print("Committed")
     else:
         if git_commit(thread_file, patch_data.get('thread'), today):
-            print("✅ Committed")
+            print("Committed")
     
     return True
 
@@ -372,7 +391,7 @@ def main():
         patch_text = get_patch_from_clipboard()
         
         if not patch_text.strip():
-            print("❌ No patch content provided")
+            print("Error: No patch content provided")
             sys.exit(1)
         
         patch_data = parse_state_patch(patch_text)
@@ -388,8 +407,8 @@ def main():
         apply_patch(thread_file, patch_data, auto_mode)
     
     else:
-        print(f"❌ Unknown mode: {mode}")
-        print("   Use 'load' or 'patch'")
+        print(f"Error: Unknown mode: {mode}")
+        print("Use 'load' or 'patch'")
         sys.exit(1)
 
 
