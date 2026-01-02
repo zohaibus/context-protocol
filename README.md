@@ -1,7 +1,9 @@
 # Context Protocol
+>The LLM is the CPU. Your files are the memory. You are the operating system.
 
-> **The LLM is the CPU. Your files are the memory. You are the operating system.**
-⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git and it's not an MCP server implementation.
+>⚠️ Not affiliated with Anthropic’s Model Context Protocol (MCP).  
+Context Protocol is a human workflow protocol for manual context injection using markdown and Git. It is not an MCP server implementation.
+
 
 
 - ❌ Not an MCP server (different from Anthropic's Model Context Protocol)
@@ -12,7 +14,7 @@
 
 ---
 
-A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human-in-the-loop cognition.
+A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human decision-making.
 
 ---
 
@@ -22,7 +24,7 @@ A sovereign-first workflow for thinking with LLMs. No agents, no vector database
 
 ## The Problem
 
-LLMs feel inconsistent because they are stateless.
+LLMs feel inconsistent over time.
 Chat history overflows. Attention decays. "Memory" features are shallow.
 The result: ideas resurface, decisions vanish, and trust erodes.
 
@@ -130,7 +132,6 @@ cd context-protocol
 pip install -r requirements.txt
 ```
 
-### First Session
 
 ### First Session (New Project)
 1. Copy `THREAD_TEMPLATE.md` to `my-project.md`
@@ -335,6 +336,8 @@ Open an issue or PR.
 ## Author
 
 Built by a practitioner who uses LLMs daily for long-horizon thinking.
+
+Also the author of [DeckBuilder](https://github.com/zohaibus/deckbuilder), a local-first presentation editor. Same philosophy: your files, your control.
 
 This repository contains no proprietary employer information and was developed independently using publicly available principles.
 
