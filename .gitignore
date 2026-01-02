@@ -15,8 +15,9 @@ env/
 !CORE_PROMPT.md
 !THREAD_TEMPLATE.md
 !USAGE_GUIDE.md
+!CONTRIBUTING.md
 !examples/*.md
-!examples/README.md
+!docs/*.md
 
 # System files
 .DS_Store
