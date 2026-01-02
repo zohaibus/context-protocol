@@ -146,14 +146,28 @@ pip install -r requirements.txt
 
 ### Automation (Optional)
 
-```bash
-# Copy CHECKPOINT output to clipboard, then:
-python tools/patch_state.py my-project.md
+The `patch_state.py` script has two modes:
 
-# Script parses the patch and updates your file
+**LOAD: Start a session**
+```bash
+# Copies CORE_PROMPT + your thread state to clipboard
+python tools/patch_state.py load my-project.md
+
+# Then paste into Claude/GPT/Gemini
 ```
 
----
+**PATCH: End a session**
+```bash
+# After saying CHECKPOINT, copy the AI's output to clipboard, then:
+python tools/patch_state.py patch my-project.md
+
+# Script parses the checkpoint and updates your file
+```
+
+**Options:**
+```bash
+python tools/patch_state.py patch my-project.md --auto  # Skip confirmations
+```
 
 ## What Makes It Different
 
