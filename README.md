@@ -1,10 +1,13 @@
 # Context Protocol
 
 > **The LLM is the CPU. Your files are the memory. You are the operating system.**
-> ⚠️ **Not affiliated with Anthropic's Model Context Protocol (MCP).** This is a human workflow protocol for manual context injection using markdown + Git — not an MCP server implementation.
-
+⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git — not an MCP server implementation.
 
 A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human-in-the-loop cognition.
+
+---
+
+![Context Protocol Comparison](docs/comparison-table.png)
 
 ---
 
@@ -241,21 +244,35 @@ The protocol is model-agnostic. Same files work everywhere.
 
 ## Repository Structure
 
+## Documentation
+
+For a high-level architectural overview to share with your team, download the **[Executive Summary (PDF)](docs/context-protocol-one-pager.pdf)**.
+
+---
+
+## Updated Repository Structure
+
+Update the repository structure to include the new files:
+
 ```
 context-protocol/
 ├── README.md               # This file
 ├── CORE_PROMPT.md          # Paste this first every session
 ├── THREAD_TEMPLATE.md      # Copy this for new projects
 ├── USAGE_GUIDE.md          # Deep dive on workflow
+├── CONTRIBUTING.md         # How to contribute
 ├── tools/
 │   └── patch_state.py      # Optional automation script
 ├── examples/
+│   ├── README.md           # Examples overview
 │   ├── PROJECT_STATE.md    # Example: software project
 │   └── STRATEGY_STATE.md   # Example: strategic planning
+├── docs/
+│   |── context-protocol-one-pager.pdf  # Executive summary
+│   |── comparison-table.png            # Old vs New Comparison
+|   |── README.md                       # Example : Exec Summary for Teams
 └── LICENSE                 # MIT
 ```
-
----
 
 ## The Mantra
 
