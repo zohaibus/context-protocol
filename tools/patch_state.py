@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Context Protocol — State Patch Tool
+Context Protocol :: State Patch Tool
 
 NOTE: This script operates only on local files.
 It does not send data anywhere or perform network operations.
@@ -343,7 +343,7 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
 
 def main():
     if len(sys.argv) < 3:
-        print("Context Protocol — State Management Tool")
+        print("Context Protocol :: State Management Tool")
         print()
         print("Usage:")
         print("  python patch_state.py load <thread-file>    Load context to clipboard")
