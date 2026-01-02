@@ -24,8 +24,8 @@ Last Updated: [YYYY-MM-DD]
 </locked_decisions>
 
 <rejected_ideas>
-1. [Idea you considered but rejected] — reason
-2. [Another rejected approach] — reason
+1. [Idea you considered but rejected] :: reason
+2. [Another rejected approach] :: reason
 </rejected_ideas>
 
 <constraints>
@@ -46,7 +46,7 @@ Last Updated: [YYYY-MM-DD]
 Use this structure to maintain your thread state between sessions:
 
 ```markdown
-# [Project Name] — Thread State
+# [Project Name] :: Thread State
 ## Last Updated: YYYY-MM-DD
 
 ---
@@ -61,16 +61,16 @@ Use this structure to maintain your thread state between sessions:
 
 ## Decisions Made
 
-1. [Decision] — [Brief rationale]
-2. [Decision] — [Brief rationale]
-3. [Decision] — [Brief rationale]
+1. [Decision] :: [Brief rationale]
+2. [Decision] :: [Brief rationale]
+3. [Decision] :: [Brief rationale]
 
 ---
 
 ## Rejected Ideas
 
-1. ~~[Rejected idea]~~ — [Why rejected]
-2. ~~[Rejected idea]~~ — [Why rejected]
+1. ~~[Rejected idea]~~ :: [Why rejected]
+2. ~~[Rejected idea]~~ :: [Why rejected]
 
 ---
 
@@ -78,7 +78,7 @@ Use this structure to maintain your thread state between sessions:
 
 - [ ] [Question still to be resolved]
 - [ ] [Another open question]
-- [x] [Resolved question] — [Answer]
+- [x] [Resolved question] :: [Answer]
 
 ---
 
@@ -115,8 +115,8 @@ Use this structure to maintain your thread state between sessions:
 
 ## Tips
 
-1. **Keep the injection block lean** — Only include what the AI needs for *this* session
-2. **Update after every session** — Apply CHECKPOINT output immediately
-3. **Commit frequently** — `git commit -am "checkpoint: [summary]"` 
-4. **Archive aggressively** — Move old context to Archive section to keep injection small
-5. **One thread per project** — Don't mix unrelated work in the same file
+1. **Keep the injection block lean** :: Only include what the AI needs for *this* session
+2. **Update after every session** :: Apply CHECKPOINT output immediately
+3. **Commit frequently** :: `git commit -am "checkpoint: [summary]"` 
+4. **Archive aggressively** :: Move old context to Archive section to keep injection small
+5. **One thread per project** :: Don't mix unrelated work in the same file
