@@ -1,4 +1,4 @@
-# Q1 Product Strategy — Thread State
+# Q1 Product Strategy :: Thread State
 
 > ⚠️ **Example only.** All data, names, budgets, and scenarios are fictional.
 
@@ -21,16 +21,16 @@ Last Updated: 2025-12-31
 <locked_decisions>
 1. Focus: Enterprise customers (not SMB)
 2. Primary metric: Net Revenue Retention (NRR)
-3. No new product lines in Q1 — optimize existing
+3. No new product lines in Q1 :: optimize existing
 4. Hiring freeze continues through Q1
 5. Budget: $500K for Q1 initiatives
 </locked_decisions>
 
 <rejected_ideas>
-1. SMB expansion — rejected, enterprise has better unit economics
-2. New mobile app — rejected, web app engagement is sufficient
-3. Acquisition strategy — rejected, focus on organic growth
-4. New pricing tiers — rejected, current pricing not the bottleneck
+1. SMB expansion :: rejected, enterprise has better unit economics
+2. New mobile app :: rejected, web app engagement is sufficient
+3. Acquisition strategy :: rejected, focus on organic growth
+4. New pricing tiers :: rejected, current pricing not the bottleneck
 </rejected_ideas>
 
 <constraints>
@@ -56,22 +56,22 @@ Last Updated: 2025-12-31
 
 ## Decisions Made
 
-1. **Enterprise focus over SMB** — 3x higher LTV, lower churn
-2. **NRR as primary metric** — Board cares about expansion revenue
-3. **No new product lines** — Optimize before expanding
-4. **Hiring freeze continues** — Runway preservation
-5. **$500K Q1 budget** — Split across top 3 initiatives
+1. **Enterprise focus over SMB** :: 3x higher LTV, lower churn
+2. **NRR as primary metric** :: Board cares about expansion revenue
+3. **No new product lines** :: Optimize before expanding
+4. **Hiring freeze continues** :: Runway preservation
+5. **$500K Q1 budget** :: Split across top 3 initiatives
 
 ---
 
 ## Rejected Ideas
 
-1. ~~SMB expansion~~ — Unit economics don't work without scale
-2. ~~Mobile app rebuild~~ — Web engagement metrics are strong
-3. ~~M&A exploration~~ — Board wants organic growth proof first
-4. ~~New pricing tiers~~ — Win rate isn't the problem, activation is
-5. ~~Platform partnerships~~ — Too early, need more enterprise logos
-6. ~~AI features~~ — Not a differentiator in our market yet
+1. ~~SMB expansion~~ :: Unit economics don't work without scale
+2. ~~Mobile app rebuild~~ :: Web engagement metrics are strong
+3. ~~M&A exploration~~ :: Board wants organic growth proof first
+4. ~~New pricing tiers~~ :: Win rate isn't the problem, activation is
+5. ~~Platform partnerships~~ :: Too early, need more enterprise logos
+6. ~~AI features~~ :: Not a differentiator in our market yet
 
 ---
 
@@ -80,7 +80,7 @@ Last Updated: 2025-12-31
 - [ ] Which 3 initiatives get the budget?
 - [ ] How to measure NRR improvement mid-quarter?
 - [ ] Should we hire 1 senior engineer exception?
-- [x] Board presentation date — Resolved: March 15
+- [x] Board presentation date :: Resolved: March 15
 
 ---
 
