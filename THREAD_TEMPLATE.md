@@ -117,6 +117,6 @@ Use this structure to maintain your thread state between sessions:
 
 1. **Keep the injection block lean** :: Only include what the AI needs for *this* session
 2. **Update after every session** :: Apply CHECKPOINT output immediately
-3. **Commit frequently** :: `git commit -am "checkpoint: [summary]"` 
+3. **Commit frequently** :: `git commit -am "checkpoint: [summary]"`
 4. **Archive aggressively** :: Move old context to Archive section to keep injection small
 5. **One thread per project** :: Don't mix unrelated work in the same file
