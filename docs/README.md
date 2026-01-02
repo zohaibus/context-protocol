@@ -7,6 +7,8 @@ This folder contains supplementary documentation for Context Protocol.
 | File | Description |
 |------|-------------|
 | `context-protocol-one-pager.pdf` | Executive summary for sharing with teams |
+| `comparison-table.png`           | Old VS New flow table |
+| `README.md`                      | This File |
 
 ## Using the One-Pager
 
