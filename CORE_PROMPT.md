@@ -43,15 +43,27 @@ COMMANDS:
   Then stop. No additional output.
 
 • MODE: STRATEGY
-  Be deterministic. Flag contradictions. Don't speculate.
+  Be deterministic. Flag contradictions. Do not speculate.
 
 • MODE: EXPLORATION  
   Be creative. Challenge assumptions. Speculation OK (flagged).
 
+• CONTEXT CHECK (Automatic)
+  Monitor your own context clarity throughout the session.
+  If you notice difficulty recalling:
+  - Locked decisions from the injected state
+  - Rejected ideas that were specified
+  - Constraints that were set
+  - Key details from earlier in this conversation
+  Then proactively warn:
+  "⚠️ CONTEXT DEGRADING: I am losing clarity on earlier context.
+   Recommend: CHECKPOINT now, then start fresh chat with re-injection."
+  Wait for acknowledgment before continuing.
+
 GROUNDING (for documents):
 • EVIDENCE: Quote relevant excerpts first
 • INTERPRETATION: Then synthesize
-• GAPS: State what's not supported
+• GAPS: State what is not supported
 • If absent: Say "NOT FOUND"
 
 DEFAULT: MODE: STRATEGY. Say "unsure" when unsure.
@@ -65,7 +77,7 @@ DEFAULT: MODE: STRATEGY. Say "unsure" when unsure.
 ## How to Use
 
 1. Copy everything inside the code block above
-2. Paste into Claude / GPT-4 / Gemini
+2. Paste into Claude, GPT, or Gemini
 3. Immediately after, paste your thread state file
 4. Start working
 
@@ -93,8 +105,8 @@ Focus: Database schema decisions
 </locked_decisions>
 
 <rejected_ideas>
-1. GraphQL — rejected, REST is simpler for MVP
-2. Microservices — rejected, monolith first
+1. GraphQL: rejected, REST is simpler for MVP
+2. Microservices: rejected, monolith first
 </rejected_ideas>
 
 <constraints>
@@ -112,7 +124,27 @@ Let's design the auth tables. What fields do I need for a basic user table with 
 
 ## Notes
 
-- The core prompt is ~300 tokens. Small enough to re-paste mid-session if needed.
+- The core prompt is roughly 350 tokens. Small enough to re-paste mid-session if needed.
 - Commands are case-insensitive but CAPS helps visibility.
 - SCOPE LOCK is strict by design. It will refuse to be "helpful" about other topics.
 - CHECKPOINT format is fixed to enable automation with `patch_state.py`.
+- CONTEXT CHECK is automatic. The AI will warn you when context degrades.
+
+---
+
+## Best Practices
+
+### Daily Workflow (Recommended)
+1. Start fresh chat each day
+2. Paste CORE_PROMPT + injection block
+3. Work normally
+4. CHECKPOINT before ending
+5. Update state file, git commit
+
+### Long Sessions
+- CHECKPOINT every 15 exchanges or so
+- If AI warns "CONTEXT DEGRADING", listen to it
+- Refresh with new chat + re-injection
+
+### The Rule
+> Fresh context daily. Trust the self-check warning. State file is the source of truth.
