@@ -21,6 +21,7 @@ Requires: pip install pyperclip
 import re
 import sys
 import os
+import subprocess
 from datetime import datetime
 
 # Try to import pyperclip for clipboard access
@@ -31,6 +32,15 @@ except ImportError:
     HAS_CLIPBOARD = False
     print("⚠️  Install pyperclip for clipboard support: pip install pyperclip")
     print("   Falling back to manual input mode.\n")
+
+
+def find_section(content, section_name):
+    """Find a section in the markdown file and return its position (case-insensitive)."""
+    pattern = rf'^## {re.escape(section_name)}\s*$'
+    match = re.search(pattern, content, re.MULTILINE | re.IGNORECASE)
+    if match:
+        return match.start(), match.end()
+    return None, None
 
 
 def find_core_prompt():
@@ -135,11 +145,11 @@ def parse_state_patch(patch_text):
         'next_actions': [],
     }
     
-    # Extract thread and date
+    # Extract thread and date (permissive regex for thread names with spaces)
     header_match = re.search(r'Thread:\s*(.*?)\s*\|\s*Date:\s*([\d-]+)', patch_text)
 
     if header_match:
-        result['thread'] = header_match.group(1)
+        result['thread'] = header_match.group(1).strip()
         result['date'] = header_match.group(2)
     
     current_section = None
@@ -177,6 +187,51 @@ def parse_state_patch(patch_text):
                     result['update_status'][key.strip()] = value.strip()
     
     return result
+
+
+def sanitize_for_commit(text):
+    """Sanitize text for safe use in git commit messages."""
+    if not text:
+        return "update"
+    # Remove potentially dangerous characters
+    safe_text = text.replace('"', '').replace("'", "").replace('`', '')
+    safe_text = safe_text.replace('\n', ' ').replace('\r', '')
+    safe_text = safe_text.replace('$', '').replace('\\', '')
+    safe_text = safe_text.replace(';', '').replace('&', '').replace('|', '')
+    # Limit length
+    return safe_text[:50].strip() or "update"
+
+
+def git_commit(thread_file, summary, today):
+    """Safely commit changes using subprocess (no shell injection)."""
+    try:
+        # Stage the file
+        subprocess.run(
+            ['git', 'add', thread_file],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
+        # Create sanitized commit message
+        safe_summary = sanitize_for_commit(summary)
+        commit_msg = f"[{safe_summary}] checkpoint: {today}"
+        
+        # Commit
+        subprocess.run(
+            ['git', 'commit', '-m', commit_msg],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Git error: {e.stderr if e.stderr else 'Unknown error'}")
+        return False
+    except FileNotFoundError:
+        print("⚠️  Git not found. Please install git or commit manually.")
+        return False
 
 
 def apply_patch(thread_file, patch_data, auto_mode=False):
@@ -273,17 +328,15 @@ def apply_patch(thread_file, patch_data, auto_mode=False):
     
     print(f"\n✅ Updated {thread_file}")
     
-    # Git commit prompt
+    # Git commit
     if not auto_mode:
         commit = input("Git commit? (y/n): ")
         if commit.lower() == 'y':
-            summary = patch_data.get('thread', 'update')
-            os.system(f'git add "{thread_file}" && git commit -m "[{summary}] checkpoint: {today}"')
-            print("✅ Committed")
+            if git_commit(thread_file, patch_data.get('thread'), today):
+                print("✅ Committed")
     else:
-        summary = patch_data.get('thread', 'update')
-        os.system(f'git add "{thread_file}" && git commit -m "[{summary}] checkpoint: {today}"')
-        print("✅ Committed")
+        if git_commit(thread_file, patch_data.get('thread'), today):
+            print("✅ Committed")
     
     return True
 
