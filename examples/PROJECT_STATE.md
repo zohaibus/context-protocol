@@ -1,4 +1,4 @@
-# TaskFlow MVP — Thread State
+# TaskFlow MVP :: Thread State
 
 > ⚠️ **Example only.** All data, names, budgets, and scenarios are fictional.
 
@@ -23,15 +23,15 @@ Last Updated: 2025-12-31
 2. Database: PostgreSQL with SQLAlchemy ORM
 3. Auth: Email/password with JWT tokens (no OAuth for MVP)
 4. Hosting: Railway free tier
-5. No mobile app — web only for MVP
+5. No mobile app :: web only for MVP
 </locked_decisions>
 
 <rejected_ideas>
-1. Django — rejected, FastAPI is lighter for API-first
-2. MongoDB — rejected, relational data needs SQL
-3. OAuth/social login — rejected, adds complexity for MVP
-4. GraphQL — rejected, REST is sufficient
-5. Microservices — rejected, monolith for speed
+1. Django :: rejected, FastAPI is lighter for API-first
+2. MongoDB :: rejected, relational data needs SQL
+3. OAuth/social login :: rejected, adds complexity for MVP
+4. GraphQL :: rejected, REST is sufficient
+5. Microservices :: rejected, monolith for speed
 </rejected_ideas>
 
 <constraints>
@@ -56,25 +56,25 @@ Last Updated: 2025-12-31
 
 ## Decisions Made
 
-1. **Tech stack: Python/FastAPI + React** — Best balance of speed and simplicity
-2. **PostgreSQL with SQLAlchemy** — Relational data, good ORM support
-3. **JWT authentication** — Stateless, works with API-first design
-4. **Email/password only for MVP** — OAuth adds too much complexity
-5. **Railway for hosting** — Free tier sufficient for MVP
-6. **Web-only, no mobile** — Ship faster, validate first
-7. **PWA for offline** — Service worker caches core functionality
+1. **Tech stack: Python/FastAPI + React** :: Best balance of speed and simplicity
+2. **PostgreSQL with SQLAlchemy** :: Relational data, good ORM support
+3. **JWT authentication** :: Stateless, works with API-first design
+4. **Email/password only for MVP** :: OAuth adds too much complexity
+5. **Railway for hosting** :: Free tier sufficient for MVP
+6. **Web-only, no mobile** :: Ship faster, validate first
+7. **PWA for offline** :: Service worker caches core functionality
 
 ---
 
 ## Rejected Ideas
 
-1. ~~Django~~ — Too heavy for API-only backend
-2. ~~MongoDB~~ — Data is relational (users, tasks, projects)
-3. ~~OAuth/social login~~ — Scope creep, add post-MVP
-4. ~~GraphQL~~ — Over-engineering for simple CRUD
-5. ~~Microservices~~ — Solo dev, monolith is faster
-6. ~~Stripe integration~~ — Free MVP first, monetize later
-7. ~~Real-time sync~~ — Polling is fine for MVP
+1. ~~Django~~ :: Too heavy for API-only backend
+2. ~~MongoDB~~ :: Data is relational (users, tasks, projects)
+3. ~~OAuth/social login~~ :: Scope creep, add post-MVP
+4. ~~GraphQL~~ :: Over-engineering for simple CRUD
+5. ~~Microservices~~ :: Solo dev, monolith is faster
+6. ~~Stripe integration~~ :: Free MVP first, monetize later
+7. ~~Real-time sync~~ :: Polling is fine for MVP
 
 ---
 
@@ -82,7 +82,7 @@ Last Updated: 2025-12-31
 
 - [ ] Password reset: email link or code?
 - [ ] Session timeout: 7 days or 30 days?
-- [x] Rate limiting approach — Resolved: Use slowapi middleware
+- [x] Rate limiting approach :: Resolved: Use slowapi middleware
 
 ---
 
