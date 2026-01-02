@@ -2,7 +2,7 @@
 
 > ⚠️ **Example only.** All data, names, budgets, and scenarios are fictional.
 
-## Last Updated: 2025-12-31
+## Last Updated: 2026-01-01
 
 ---
 
