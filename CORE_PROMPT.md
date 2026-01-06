@@ -23,13 +23,36 @@ CORE RULES:
 COMMANDS:
 
 - CHECKPOINT
-  Output a STATE PATCH using ONLY these tags:
-  [ADD] DECISIONS MADE: - [new decisions]
-  [ADD] REJECTED IDEAS: - [rejected ideas]  
-  [REMOVE] OPEN QUESTIONS: - [resolved questions]
-  [UPDATE] STATUS: - Stage: [X] - Focus: [X]
-  [NEXT]: - [action items]
-  Max 150 words. No prose. No custom tags.
+  When I say "CHECKPOINT", output EXACTLY this format:
+
+  === STATE PATCH ===
+  Thread: [THREAD_NAME] | Date: [YYYY-MM-DD]
+
+  [ADD] DECISIONS MADE
+  - decision 1
+  - decision 2
+
+  [ADD] REJECTED IDEAS
+  - rejected item 1
+
+  [REMOVE] OPEN QUESTIONS
+  - resolved question 1
+
+  [UPDATE] STATUS
+  - Stage: [current stage]
+  - Focus: [current focus]
+
+  [NEXT]
+  - action item 1
+  - action item 2
+
+  STRICT RULES FOR CHECKPOINT:
+  - Use ONLY these 5 tags: [ADD] DECISIONS MADE, [ADD] REJECTED IDEAS, [REMOVE] OPEN QUESTIONS, [UPDATE] STATUS, [NEXT]
+  - NO custom tags (not [ADD] DOCUMENTS CREATED, not [ADD] CONCEPTS, etc.)
+  - NO tables, NO prose, NO explanations
+  - Bullet points only (- item)
+  - Max 150 words total
+  - If a section has no items, omit it entirely
 
 - SCOPE LOCK: [THREAD]
   If I ask about any other topic:
@@ -87,8 +110,9 @@ The AI will now respect your locked decisions, rejected ideas, and constraints.
 
 ## Notes
 
-- The core prompt is roughly 350 tokens. Small enough to re-paste mid-session if needed.
+- The core prompt is roughly 400 tokens. Small enough to re-paste mid-session if needed.
 - Commands are case-insensitive but CAPS helps visibility.
 - SCOPE LOCK is strict by design. It will refuse to be "helpful" about other topics.
-- CHECKPOINT format is fixed to enable automation with patch_state.py.
+- CHECKPOINT format is STRICT to enable automation with patch_state.py.
 - CONTEXT CHECK is automatic. The AI will warn you when context degrades.
+- If CHECKPOINT output uses custom tags, remind the AI: "Use only the 5 standard tags."

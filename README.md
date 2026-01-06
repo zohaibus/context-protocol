@@ -1,20 +1,17 @@
 # Context Protocol
->The LLM is the CPU. Your files are the memory. You are the operating system.
 
->⚠️ Not affiliated with Anthropic’s Model Context Protocol (MCP).  
-Context Protocol is a human workflow protocol for manual context injection using markdown and Git. It is not an MCP server implementation.
+> **The LLM is the CPU. Your files are the memory. You are the operating system.**
 
-
+⚠️ Not affiliated with Anthropic's Model Context Protocol (MCP). This is a human workflow protocol for manual context injection using markdown + Git :: not an MCP server implementation.
 
 - ❌ Not an MCP server (different from Anthropic's Model Context Protocol)
 - ❌ Not a RAG pipeline or vector database
 - ❌ Not an agent framework
 - ✅ A protocol for human-in-the-loop cognition
 
-
 ---
 
-A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human decision-making.
+A sovereign-first workflow for thinking with LLMs. No agents, no vector databases, no vendor lock-in. Just text files and a protocol for human-in-the-loop cognition.
 
 ---
 
@@ -24,7 +21,7 @@ A sovereign-first workflow for thinking with LLMs. No agents, no vector database
 
 ## The Problem
 
-LLMs feel inconsistent over time.
+LLMs feel inconsistent because they are stateless.
 Chat history overflows. Attention decays. "Memory" features are shallow.
 The result: ideas resurface, decisions vanish, and trust erodes.
 
@@ -80,7 +77,7 @@ If your work requires consistent AI behavior over time, this is for you.
 |---------|--------------|
 | `CHECKPOINT` | Export state as structured diff |
 | `SCOPE LOCK` | Refuse to discuss other topics |
-| `HARD STOP` | Emergency brake, full stop completely |
+| `HARD STOP` | Emergency brake, stop completely |
 | `MODE: STRATEGY` | Deterministic, flag contradictions |
 | `MODE: EXPLORATION` | Creative, challenge assumptions |
 
@@ -103,16 +100,24 @@ Rules to always obey. No exceptions.
 ### The Workflow
 
 ```
-START SESSION:
-1. Paste CORE_PROMPT.md (the rules)
-2. Paste your thread state (the context)
-3. Work normally
+load → work → CHECKPOINT → patch → push
+```
 
-END SESSION:
-1. Say "CHECKPOINT"
-2. Copy the structured output
-3. Update your state file
-4. Git commit
+**START SESSION:**
+```bash
+python tools/patch_state.py load my-project.md
+# Copies CORE_PROMPT + thread state to clipboard
+# Paste into Claude/GPT/Gemini
+```
+
+**WORK:** Ask questions, brainstorm, make decisions
+
+**END SESSION:**
+```bash
+# 1. Say "CHECKPOINT" in the chat
+# 2. Copy AI output to clipboard
+python tools/patch_state.py patch my-project.md
+git push
 ```
 
 ---
@@ -123,6 +128,7 @@ END SESSION:
 - A text editor (VS Code, Obsidian, or any markdown editor)
 - Git
 - An LLM (Claude, GPT, or Gemini)
+- Python 3.7+ (for automation script)
 
 ### Setup
 
@@ -132,52 +138,103 @@ cd context-protocol
 pip install -r requirements.txt
 ```
 
-
 ### First Session (New Project)
+
 1. Copy `THREAD_TEMPLATE.md` to `my-project.md`
 2. Edit the template with your project context
-3. Open Claude/GPT/Gemini
-4. Paste contents of `CORE_PROMPT.md`
-5. Paste contents of `my-project.md`
-6. Start working
+3. Load and start:
+   ```bash
+   python tools/patch_state.py load my-project.md
+   ```
+4. Paste into Claude/GPT/Gemini
+5. Start working
 
 ### Resuming a Session (Existing Project)
-1. Open Claude/GPT/Gemini
-2. Paste contents of `CORE_PROMPT.md`
-3. Paste the **Session Injection Block** from your state file
-4. Continue working
+
+```bash
+python tools/patch_state.py load my-project.md
+# Paste into Claude/GPT/Gemini
+# Continue working
+```
 
 ### End Session
 
 1. Type: `CHECKPOINT`
-2. AI outputs a structured state patch
-3. Update your `my-project.md` file
-4. Commit: `git commit -am "checkpoint: [summary]"`
+2. Copy the AI's output to clipboard
+3. Apply the patch:
+   ```bash
+   python tools/patch_state.py patch my-project.md
+   ```
+4. Push to remote:
+   ```bash
+   git push
+   ```
 
-### Automation (Optional)
+---
 
-The `patch_state.py` script has two modes:
+## CHECKPOINT Format
+
+When you say `CHECKPOINT`, the AI outputs a strict format:
+
+```
+=== STATE PATCH ===
+Thread: PROJECT-NAME | Date: YYYY-MM-DD
+
+[ADD] DECISIONS MADE
+- Decision 1
+- Decision 2
+
+[ADD] REJECTED IDEAS
+- Rejected item
+
+[REMOVE] OPEN QUESTIONS
+- Resolved question
+
+[UPDATE] STATUS
+- Stage: Current stage
+- Focus: Current focus
+
+[NEXT]
+- Action item 1
+- Action item 2
+```
+
+**Rules:**
+- Only these 5 tags are valid
+- No custom tags, no tables, no prose
+- Bullet points only (`-` or `*`)
+- Omit empty sections
+
+The `patch_state.py` script parses this format and updates your state file automatically, including the `<locked_decisions>` and `<rejected_ideas>` in your SESSION INJECTION block.
+
+---
+
+## Automation Script
+
+The `patch_state.py` script handles context loading and checkpoint parsing:
 
 **LOAD: Start a session**
 ```bash
-# Copies CORE_PROMPT + your thread state to clipboard
 python tools/patch_state.py load my-project.md
-
-# Then paste into Claude/GPT/Gemini
+# Copies CORE_PROMPT + thread state to clipboard
+# Paste into Claude/GPT/Gemini
 ```
 
 **PATCH: End a session**
 ```bash
-# After saying CHECKPOINT, copy the AI's output to clipboard, then:
+# After saying CHECKPOINT, copy AI output to clipboard, then:
 python tools/patch_state.py patch my-project.md
-
-# Script parses the checkpoint and updates your file
+# Script updates <locked_decisions>, <rejected_ideas>, and Next Actions
 ```
 
 **Options:**
 ```bash
 python tools/patch_state.py patch my-project.md --auto  # Skip confirmations
 ```
+
+**Always use `load` to start sessions** :: it ensures CORE_PROMPT is included, which defines the CHECKPOINT format. Without CORE_PROMPT, the AI may improvise and output non-standard formats.
+
+---
 
 ## What Makes It Different
 
@@ -249,12 +306,20 @@ Different problems, different solutions.
 ### "This is too manual"
 
 Manual where decisions matter is a feature, not a bug.
-The friction is intentional and it's your quality control checkpoint.
+The friction is intentional :: it's your quality control checkpoint.
 
 ### "What about [Mem.ai / Notion AI / etc]?"
 
 Those store your data on their servers.
 This is sovereign-first. Your files, your machine, your control.
+
+### "CHECKPOINT gave me a weird format"
+
+You probably forgot to include CORE_PROMPT at session start. Always use:
+```bash
+python tools/patch_state.py load my-project.md
+```
+This ensures CORE_PROMPT is included, which defines the strict CHECKPOINT format.
 
 ---
 
@@ -273,17 +338,13 @@ The protocol is model-agnostic. Same files work everywhere.
 
 ---
 
-## Repository Structure
-
 ## Documentation
 
 For a high-level architectural overview to share with your team, download the **[Executive Summary (PDF)](docs/context-protocol-one-pager.pdf)**.
 
 ---
 
-## Updated Repository Structure
-
-Update the repository structure to include the new files:
+## Repository Structure
 
 ```
 context-protocol/
@@ -292,18 +353,21 @@ context-protocol/
 ├── THREAD_TEMPLATE.md      # Copy this for new projects
 ├── USAGE_GUIDE.md          # Deep dive on workflow
 ├── CONTRIBUTING.md         # How to contribute
+├── SECURITY.md             # Security considerations
 ├── tools/
-│   └── patch_state.py      # Optional automation script
+│   └── patch_state.py      # Automation script
 ├── examples/
 │   ├── README.md           # Examples overview
 │   ├── PROJECT_STATE.md    # Example: software project
 │   └── STRATEGY_STATE.md   # Example: strategic planning
 ├── docs/
-│   |── context-protocol-one-pager.pdf  # Executive summary
-│   |── comparison-table.png            # Old vs New Comparison
-|   |── README.md                       # Example : Exec Summary for Teams
+│   ├── context-protocol-one-pager.pdf  # Executive summary
+│   ├── comparison-table.png            # Old vs New comparison
+│   └── README.md                       # Documentation index
 └── LICENSE                 # MIT
 ```
+
+---
 
 ## The Mantra
 
@@ -311,6 +375,10 @@ context-protocol/
 The LLM proposes.
 You ratify.
 The system records.
+```
+
+```
+load → work → CHECKPOINT → patch → push
 ```
 
 ---

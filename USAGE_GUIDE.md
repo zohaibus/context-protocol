@@ -8,7 +8,7 @@ A deep dive into the Context Protocol workflow, philosophy, and best practices.
 
 ### Why LLMs Feel Inconsistent
 
-LLMs are **stateless text processors**. They don't "remember" anything :: they process your input and generate output, then reset completely.
+LLMs are **stateless text processors**. They don't "remember" anything - they process your input and generate output, then reset completely.
 
 What feels like "memory" is actually:
 - Chat history being re-fed into the context window
@@ -53,20 +53,32 @@ ANY LLM (The CPU)
 
 ## The Workflow
 
+### Quick Reference
+
+```
+START:   load -> paste -> work
+END:     CHECKPOINT -> copy -> patch -> push
+```
+
 ### Session Start
 
-1. **Open your thread state file** (e.g., `my-project.md`)
-2. **Load context to clipboard:**
+1. **Load context to clipboard:**
    ```bash
    python tools/patch_state.py load my-project.md
    ```
-3. **Open Claude/GPT/Gemini**
-4. **Paste** (Ctrl+V / Cmd+V)
-5. **Start working**
+   This copies CORE_PROMPT + your thread state together.
+
+2. **Open Claude/GPT/Gemini**
+
+3. **Paste** (Ctrl+V / Cmd+V) - both files are combined
+
+4. **Start working**
+
+**Important:** Always use the `load` command. It ensures CORE_PROMPT is included, which defines the CHECKPOINT format.
 
 ### During Session
 
-- Work normally :: ask questions, brainstorm, code
+- Work normally - ask questions, brainstorm, code
 - AI will respect your `<locked_decisions>` and `<constraints>`
 - If AI tries to resurrect a `<rejected_ideas>`, it should warn you
 - If you drift off topic, `SCOPE LOCK` will redirect you
@@ -84,13 +96,18 @@ This prevents losing work if the session crashes or context degrades.
 ### Session End
 
 1. Say: `CHECKPOINT`
-2. Copy the STATE PATCH output
-3. Apply to your file:
+2. AI outputs the STATE PATCH in strict format
+3. Copy the output to clipboard
+4. Apply to your file:
    ```bash
    python tools/patch_state.py patch my-project.md
    ```
-4. Review changes, confirm
-5. Git commit happens automatically
+5. Review changes, confirm
+6. Git commit happens automatically
+7. Push to remote:
+   ```bash
+   git push
+   ```
 
 ---
 
@@ -106,28 +123,36 @@ This prevents losing work if the session crashes or context degrades.
 - Every ~15 exchanges in long sessions
 - When you want to "save your game"
 
-**Output format:**
+**Output format (STRICT):**
 ```
 === STATE PATCH ===
 Thread: PROJECT-NAME | Date: 2025-01-01
 
-[ADD] DECISIONS MADE:
-• Decision we made in this session
+[ADD] DECISIONS MADE
+- Decision we made in this session
+- Another decision
 
-[ADD] REJECTED IDEAS:
-• Idea we explicitly ruled out
+[ADD] REJECTED IDEAS
+- Idea we explicitly ruled out
 
-[REMOVE] OPEN QUESTIONS:
-• Question we answered
+[REMOVE] OPEN QUESTIONS
+- Question we answered
 
-[UPDATE] STATUS:
-• Stage: New stage
-• Focus: New focus
+[UPDATE] STATUS
+- Stage: New stage
+- Focus: New focus
 
-[NEXT]:
-• Action item 1
-• Action item 2
+[NEXT]
+- Action item 1
+- Action item 2
 ```
+
+**Strict Rules:**
+- ONLY these 5 tags are allowed: `[ADD] DECISIONS MADE`, `[ADD] REJECTED IDEAS`, `[REMOVE] OPEN QUESTIONS`, `[UPDATE] STATUS`, `[NEXT]`
+- NO custom tags (like `[ADD] DOCUMENTS CREATED`)
+- NO tables, NO prose, NO explanations
+- Bullet points only (`- item`)
+- If a section has no items, omit it entirely
 
 ### SCOPE LOCK
 
@@ -142,14 +167,14 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 1. Set `<scope>LOCKED</scope>` in your thread state
 2. If you ask about another topic, AI responds:
    ```
-   ⚠️ SCOPE VIOLATION: [topic] is outside [THREAD].
+   [!] SCOPE VIOLATION: [topic] is outside [THREAD].
    Unlock scope or switch thread?
    ```
 3. AI stops and waits for your decision
 
 ### HARD STOP
 
-**Purpose:** Emergency brake :: stop all output immediately
+**Purpose:** Emergency brake - stop all output immediately
 
 **When to use:**
 - AI is going in a wrong direction
@@ -217,9 +242,9 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 **Example:**
 ```xml
 <rejected_ideas>
-1. GraphQL :: too complex for MVP
-2. Microservices :: need monolith first
-3. Blockchain :: not relevant to our problem
+1. GraphQL - too complex for MVP
+2. Microservices - need monolith first
+3. Blockchain - not relevant to our problem
 </rejected_ideas>
 ```
 
@@ -232,10 +257,10 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 **Example:**
 ```xml
 <constraints>
-• Budget: $0 (free tier only)
-• Timeline: 4 weeks to MVP
-• Team: Solo developer
-• Must work offline
+- Budget: $0 (free tier only)
+- Timeline: 4 weeks to MVP
+- Team: Solo developer
+- Must work offline
 </constraints>
 ```
 
@@ -243,9 +268,17 @@ Thread: PROJECT-NAME | Date: 2025-01-01
 
 ## Best Practices
 
+### Always Use the Load Command
+
+```bash
+python tools/patch_state.py load my-project.md
+```
+
+This ensures CORE_PROMPT is always included. Without it, the AI won't know the CHECKPOINT format and will improvise.
+
 ### Keep Injection Blocks Small
 
-The session injection should be **lean** :: only what the AI needs for this specific session.
+The session injection should be **lean** - only what the AI needs for this specific session.
 
 **Too big:**
 - Full project history
@@ -264,6 +297,7 @@ Move old context to the **Archive** section of your state file.
 
 ```bash
 git commit -am "[PROJECT] checkpoint: summary of what happened"
+git push
 ```
 
 Your Git history becomes:
@@ -289,7 +323,8 @@ Don't mix unrelated work:
 After every session:
 1. Apply the CHECKPOINT
 2. Commit to Git
-3. Don't "do it later"
+3. Push to remote
+4. Don't "do it later"
 
 State files that aren't updated become stale and useless.
 
@@ -328,22 +363,29 @@ Signs:
 Fix:
 1. Say `CHECKPOINT` to save current state
 2. Start a new session
-3. Paste fresh CORE_PROMPT + thread state
+3. Use `load` command to paste fresh context
 
 ### CHECKPOINT Format Is Wrong
 
-If AI outputs prose instead of structured format:
+If AI outputs custom tags like `[ADD] DOCUMENTS CREATED` or uses tables/prose:
 
 Say:
 ```
-Use the exact CHECKPOINT format:
-[ADD] DECISIONS MADE: • item
-[ADD] REJECTED IDEAS: • item
-[UPDATE] STATUS: • Stage: X • Focus: X
-[NEXT]: • action
+Redo CHECKPOINT using ONLY these 5 tags:
+[ADD] DECISIONS MADE
+[ADD] REJECTED IDEAS
+[REMOVE] OPEN QUESTIONS
+[UPDATE] STATUS
+[NEXT]
 
-No prose. Only these tags.
+No custom tags. No tables. Bullets only.
 ```
+
+### Script Can't Parse CHECKPOINT
+
+The `patch_state.py` script expects the strict 5-tag format. If parsing fails:
+1. Ask AI to redo CHECKPOINT in strict format
+2. Or manually update your state file (the protocol still works)
 
 ---
 
@@ -410,6 +452,10 @@ Local files:
 The LLM proposes.
 You ratify.
 The system records.
+```
+
+```
+load -> work -> CHECKPOINT -> patch -> push
 ```
 
 You are the operating system.
